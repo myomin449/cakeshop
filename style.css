@@ -1,0 +1,19 @@
+body{
+	background-color: #fcd4f2;
+	/*	background-image: url(images/p1.jpeg);*/
+	background-size: 100%;
+}
+
+
+.line{
+	width: 250px;
+	border-color: black;
+	border:20;
+	border-style: all;
+}
+
+.word1{
+	font-family:DancingScript-Variable;
+	color:#ff00e5;
+
+}

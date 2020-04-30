@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cake Shop!</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" type="text/css" href="fontawesome/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="font.css">
+  <script type="text/javascript" src="custom.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="custom.js"></script>
+  <script type="text/javascript">
+    $('#blogCarousel').carousel({
+      interval: 5000
+    });
+  </script>
+
+  <style type="text/css">
+    .blog .carousel-indicators {
+      left: 0;
+      top: auto;
+      bottom: -40px;
+
+    }
+
+    /* The colour of the indicators */
+    .blog .carousel-indicators li {
+      background: #a3a3a3;
+      border-radius: 50%;
+      width: 8px;
+      height: 8px;
+    }
+
+    .blog .carousel-indicators .active {
+      background: #707070;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container bg-light">
+    <div class="row">
+      <div id="banner">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+          <div class="container">
+            <a class="navbar-brand" href="#">
+              <img src="images/logo.jpg" alt="" style="width: 100px; height: 50px;">
+            </a><h1 style="color: white;">Cake Shop!</h1>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="index.html">Home
+                    <span class="sr-only">(current)</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="cake.html">Cakes</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="about.html">About</a>
+                </li>
+                <li class="nav-item">
+                 <a class="nav-link" href="contact.html">Contact Us</a>
+               </li>
+               <li class="nav-item">
+                <a class="nav-link" href="cart.html"><i class="fas fa-cart-arrow-down"></i>(<span id="count"></span>)</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <center><img class="d-block w-100" src="images/p13.jpg" alt="Second slide" style="height:360px;"></center> 
+      <div class="container">
+        <div class="row">
+
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mt-4">
+            <table align="center" border="1" bgcolor="white" cellspacing="0" cellpadding="15" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th><center>No.</center></th>
+                  <th><center>Name</center></th>
+                  <th><center>price</center></th>
+                  <th><center>Qty</center></th>
+                  <th><center>SubTotal</center></th>
+                </tr>
+                <tbody id="tbody">
+
+                </tbody>
+              </thead>
+              <tfoot>
+              </tfoot>
+
+            </table>
+
+            <br>
+            <center><button id="order"><font size="5px">Order</font></button></center>
+          </div>
+          <script type="text/javascript">
+            $(document).ready(function(){
+              count();
+              getData();
+              function getData(){
+                var shop_str=localStorage.getItem("cake_shop");
+                if(shop_str){
+                  var shop_arr=JSON.parse(shop_str);
+                  var html='';
+                  var j=1;
+                  var total=0;
+                  $.each(shop_arr,function(i,v){
+                    var qty=v.qty;
+                    var price=v.price;
+                    var sub_total=qty*price;
+
+
+
+                    html+=`<tr>
+                    <td><center>${j++}</center></td>
+                    <td><center>${v.name}</center></td>
+                    <td><center>${v.price}</center></td>
+                    <td><center><button class="min" data-item_i="${i}">-</button> ${v.qty}<button class="max" data-item_i="${i}">+</button></center></td>
+                    <td><center>${sub_total}</center></td>
+                    </tr>`;
+                    total+=sub_total;
+
+                  })
+                  html+=`<tr>
+                  <td colspan="4"><center>Total</center></td>
+                  <td><center>${total}</center></td>
+                  </tr>`
+                  $("#tbody").html(html);
+
+
+
+                }
+                else{
+                  html='';
+                  $("#tbody").html(html);
+                }
+
+              };
+
+              $("#tbody").on("click",".min",function(){
+                var item_i=$(this).data("item_i");
+                
+                var shop_str=localStorage.getItem("cake_shop");
+                if(shop_str){
+                  var shop_arr=JSON.parse(shop_str);
+                  $.each(shop_arr,function(i,v){
+                    if(item_i==i){
+                      v.qty--;
+                      if(v.qty==0){
+                        shop_arr.splice(item_i,1)}
+                      }
+                      var shopData=JSON.stringify(shop_arr);
+                      localStorage.setItem('cake_shop',shopData);
+                      getData();
+                    })
+                }
+                
+
+              })
+
+              $("#tbody").on("click",".max",function(){
+                var item_i=$(this).data("item_i");
+                
+                var shop_str=localStorage.getItem("cake_shop");
+                if(shop_str){
+                  var shop_arr=JSON.parse(shop_str);
+                  $.each(shop_arr,function(i,v){
+                    if(item_i==i){
+                      v.qty++;
+                    }
+                    var shopData=JSON.stringify(shop_arr);
+                    localStorage.setItem('cake_shop',shopData);
+                    getData();
+                  })
+
+                }
+                
+              })
+              $("#order").click(function(){
+
+                localStorage.clear();
+                getData();
+              })
+            })
+
+          </script>
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+  <hr>
+</div>
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mt-4">
+
+            <h3>Our Branches!</h3>
+            <ul type="circle">
+              <li><a href="#">Mayangone Branch</a></li>
+              <li><a href="#">Maynigone Branch</a></li>
+              <li><a href="#">sule Branch</a></li>
+              <li><a href="#">Mingalardon Branch</a></li>
+              <li><a href="#">shwe Pyi Tar Branch</a></li>
+            </ul>
+            
+          </div>
+
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mt-4">
+            <center> <h3>Our Work Time!</h3></center>
+            <ul type="circle">
+             <li style="color: blue;">Our work time is from 9 am to 8 pm.</li>
+           </ul>
+           <center><button>More Details</button></center>
+         </div>
+
+         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mt-4">
+          <center><h3>To be Know!</h3></center>
+          <ul type="circle">
+            <li><a href="#">health and Cakes</a></li>
+            <li><a href="#">How To Make A Cake?</a></li>
+            <li><a href="#">Taste And Feelings!</a></li>
+            <li><a href="#">Cakes And Coffee!</a></li>
+            <li><a href="3">Cakes Designs!</a></li>
+          </ul>
+          
+        </div>
+
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mt-4">
+          <center><h3>Find Us On Other!</h3></center>
+          <div style='width:40px; float:left;'>
+            <a href='&quot;http://twitter.com/' rel='external nofollow' target='_blank'><img alt='Twitter' src='images/twitter.png' style='padding:0;margin:0;border:none;'/></a>
+          </div>
+          <div style='width:40px; float:left;'>
+            <a href='#' rel='external nofollow' target='_blank'><img alt='Facebook' src='images/facebook.png'></a>
+          </div>
+          <div style='width:40px; float:left;'>
+            <a href='#' rel='external nofollow' target='_blank'><img alt='Feed' src='images/feed.png'></a>
+          </div>
+          <div style='width:40px; float:left;'>
+            <a href='#' rel='external nofollow' target='_blank'><img alt='Feed' src='images/myspace.png'></a>
+          </div>
+          <div style='width:40px; float:left;'>
+            <a href='#' rel='external nofollow' target='_blank'><img alt='Feed' src='images/linkedin.png'></a>
+          </div>
+          <div style='width:40px; float:left;'>
+            <a href='#' rel='external nofollow' target='_blank'><img alt='Feed' src='images/youtube.png'></a>
+          </div>
+          <div style="clear: both;"></div>
+          <div id="templatemo_search_section">
+            <form method="get" action="#">
+              <input type="radio" name="search" value="thissite" />this site <input type="radio" name="search" value="theweb" checked="checked" /> the web <br />
+              <input type="text" name="q" size="28" id="searchfield" title="searchfield" />
+              <input type="submit" name="Search" value="Search" alt="Search" id="searchbutton" title="Search" />
+            </form>
+          </div>          
+
+        </div>
+
+        <div align="center" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 my-4" style="background-color: #343A40;">
+          <p style="color:white;">2020 &copy;NOBLE MYANMAR | Designed By <a id="myomin" href="#">Myo Min</a></p>
+        </div>
+
+      </div>
+      
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
